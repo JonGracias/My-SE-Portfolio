@@ -1,5 +1,5 @@
 ﻿// src/app/page.tsx
-import { RepoProvider } from "@/context/RepoContext";
+import ContextProviderTree from "@/context/ContextProviderTree";
 import RepoList from "@/components/RepoList";
 import { fetchRepos } from "@/lib/github";
 import { Repo } from "@/lib/types";
@@ -9,7 +9,7 @@ export default async function Page() {
 
   return (
     <main className="relative flex flex-col min-h-screen overflow-hidden">
-      <RepoProvider repos={repos} >
+      <ContextProviderTree repos={repos} >
         {/* Name/Introduction */}
         <section className="
                   flex flex-col max-w-[1000px] w-full mx-auto
@@ -36,7 +36,7 @@ export default async function Page() {
         <footer className="z-[10] text-center text-sm text-gray-500 mt-10 sm:py-2">
           © {new Date().getFullYear()} Jonathan Gracias — Built with Next.js + Tailwind + Azure
         </footer>
-      </RepoProvider>
+      </ContextProviderTree>
     </main>
 
   );

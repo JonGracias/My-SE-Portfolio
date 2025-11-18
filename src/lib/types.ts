@@ -7,7 +7,7 @@ export type Repo = {
   stargazers_count: number;
   language: string | null;
   languages: Record<string, number>
-  languages_abv: Record<string, number> // I need an abreviated langauges for display
+  languages_abv: Record<string, number> 
   forks_count: number;
   open_issues_count: number;
   owner: string;

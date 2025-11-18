@@ -34,6 +34,16 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+@keyframes slideDownFade {
+  0% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slideDownFade {
+  animation: slideDownFade 0.25s ease-out forwards;
+}
+
+
 
 
 /* Always-visible scrollbar with white thumb border */
