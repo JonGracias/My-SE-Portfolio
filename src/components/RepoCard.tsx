@@ -22,7 +22,6 @@ export default memo(function RepoCard({ repo }: { repo: Repo }) {
   function handleLeave() {
     const el = infoRef.current?.getScrollElement?.();
 
-    // Optional: Smoothly return to top when mouse leaves
     if (el) {
       el.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -57,7 +56,7 @@ export default memo(function RepoCard({ repo }: { repo: Repo }) {
   const buttonClass = [
     "h-[3.5rem] w-[3.5rem]",
     "flex items-center justify-center",
-    "rounded-lg m-1",
+    "rounded-lg m-",
     "border border-white dark:border-neutral-900",
     "hover:border-blue-400 dark:hover:border-orange-400",
   ].join(" ");
@@ -71,10 +70,10 @@ export default memo(function RepoCard({ repo }: { repo: Repo }) {
     <section
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
-      id="popup-card"
+      
       ref={cardRef}
       className={[
-        "popup-card",
+        
         "group block rounded-xl border shadow-sm",
         "bg-white dark:bg-neutral-900 border-gray-200 dark:border-neutral-700",
         "hover:border-blue-400 hover:shadow-xl",

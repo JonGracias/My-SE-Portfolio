@@ -23,6 +23,7 @@ export default function Popup({ object, position = {} }: PopupProps) {
     
   return (
     <div
+      id="popup-card"
       className="fixed z-[20] w-fit h-fit"
       style={{
         top: finalPos.top,

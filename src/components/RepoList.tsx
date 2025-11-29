@@ -1,12 +1,12 @@
 ﻿"use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import RepoCard from "./RepoCard";
 import RepoFilters from "./RepoFilters";
 import Popup from "./Popup";
-import { Repo } from "@/lib/types";
 import { useRepoContext } from "@/context/RepoContext";
 import { useUIContext } from "@/context/UIContext";
+import { Repo } from "@/lib/types";
 
 interface Position {
   top: number;
@@ -15,19 +15,14 @@ interface Position {
 }
 
 export default function RepoList() {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
   const defaultPos: Position = { top: 0, left: 0, scale: 1 };
   const [hoverPos, setHoverPos] = useState<Position>(defaultPos);
   const [messagePos, setMessagePos] = useState<Position>(defaultPos);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  //
-  // Repo Context
-  //
   const { visibleRepos } = useRepoContext();
 
-  //
-  // UI Context
-  //
   const {
     hoveredRepo,
     setHoveredRepo,
@@ -35,81 +30,87 @@ export default function RepoList() {
     setScrolling,
     message,
     clearMessage,
+    clearHoveredRepo,
   } = useUIContext();
 
-  //
-  // Hover Handler
-  //
-  function handleMouseEnter(el: HTMLDivElement, repo: Repo) {
-    setHoveredRepo(repo);
-    const rect = el.getBoundingClientRect();
-    const containerRect = scrollContainerRef.current?.getBoundingClientRect();
-    if (!containerRect) return;
+  /* -----------------------------------------------------------
+   * Popup Position Calculation (Single Source of Truth)
+   * ----------------------------------------------------------- */
+  const computePopupPosition = useCallback(
+    (rect: DOMRect) => {
+      const containerRect = scrollContainerRef.current?.getBoundingClientRect();
+      if (!containerRect) return defaultPos;
 
-    const containerTop = containerRect.top;
-    const containerBottom = containerRect.bottom;
+      const containerTop = containerRect.top;
+      const containerBottom = containerRect.bottom;
 
-    // Popup sizing
-    const popupHeight = rect.height;
+      const popupHeight = rect.height;
 
-    // Positioning
-    let popupTop = rect.top;
-    const minTop = containerTop + 10;
-    if (popupTop < minTop) popupTop = minTop;
+      let top = rect.top;
+      const minTop = containerTop + 10;
+      if (top < minTop) top = minTop;
 
-    const maxBottom = containerBottom - 20;
-    const popupBottom = popupTop + popupHeight;
-    if (popupBottom > maxBottom) popupTop = maxBottom - popupHeight;
+      const maxBottom = containerBottom - 20;
+      if (top + popupHeight > maxBottom) {
+        top = maxBottom - popupHeight;
+      }
 
-    const popupLeft = rect.left - 15;
+      const left = rect.left - 15;
 
-    // Hover popup
-    setHoverPos({
-      top: popupTop,
-      left: popupLeft,
-      scale: 1.1,
-    });
+      return { top, left, scale: 1.1 };
+    },
+    [scrollContainerRef]
+  );
 
-    // Message popup
-    setMessagePos({
-      top: popupTop,
-      left: popupLeft,
-      scale: 1,
-    });
-  }
+  /* -----------------------------------------------------------
+  * Hover Logic
+  * ----------------------------------------------------------- */
+  const handleMouseEnter = useCallback(
+    (element: HTMLDivElement, repo: Repo) => {
+      setHoveredRepo(repo);
 
-  function handleMouseLeave() {
-    setHoveredRepo(null);
+      const rect = element.getBoundingClientRect();
+      const pos = computePopupPosition(rect);
+
+      setHoverPos(pos);
+      setMessagePos({ ...pos, scale: 1 });
+    },
+    [setHoveredRepo, computePopupPosition]
+  );
+
+  const handleMouseLeave = useCallback(() => {
+    clearHoveredRepo();
     clearMessage();
-  }
+  }, [clearHoveredRepo, clearMessage]);
 
-  //
-  // Scroll → hide popup
-  //
+  /* -----------------------------------------------------------
+  * Scroll Behavior: Hide popups during scroll
+  * ----------------------------------------------------------- */
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    let scrollTimeout: ReturnType<typeof setTimeout>;
+    let timeout: NodeJS.Timeout;
 
-    const handleScroll = () => {
+    const onScroll = () => {
       setScrolling(true);
-      setHoveredRepo(null);
+      clearHoveredRepo();
       clearMessage();
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(() => setScrolling(false), 150);
+
+      clearTimeout(timeout);
+      timeout = setTimeout(() => setScrolling(false), 150);
     };
 
-    container.addEventListener("scroll", handleScroll);
+    container.addEventListener("scroll", onScroll);
     return () => {
-      container.removeEventListener("scroll", handleScroll);
-      clearTimeout(scrollTimeout);
+      container.removeEventListener("scroll", onScroll);
+      clearTimeout(timeout);
     };
-  }, []);
+  }, [setScrolling, clearHoveredRepo, clearMessage]);
 
-  //
-  // Render
-  //
+  /* -----------------------------------------------------------
+   * RENDER
+   * ----------------------------------------------------------- */
   return (
     
       <div
@@ -120,7 +121,7 @@ export default function RepoList() {
         custom-scrollbar
         bg-gray-100 dark:bg-gray-800
         border border-gray-300 dark:border-gray-700
-        [height:calc(100dvh-24rem)]
+        [height:calc(100dvh-23rem)]
         max-w-[65rem]
         min-h-[20rem]
         shadow-md rounded-2xl">

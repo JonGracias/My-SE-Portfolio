@@ -5,7 +5,7 @@ import { useLanguageIcons } from "@/context/LanguageIconContext";
 interface LangIconProps {
   lang: string;
   percentText: string;
-  size?: number;       // optional – grid can pass bigger icons if needed
+  size?: number;       
 }
 
 export default function LangIcon({
@@ -16,11 +16,11 @@ export default function LangIcon({
   const iconUrl = getIcon(lang);
 
   return (
-    <div className="relative flex items-center justify-center">
+    <div className="relative flex items-center justify-center w-[4rem]">
       {/* Logo */}
       <div className="
-          w-12 h-12 flex items-center justify-center
-          rounded-lg
+          w-11 h-11 flex items-center justify-center
+          rounded-sm
           bg-icon
           backdrop-blur-sm
           pointer-events-none">
@@ -28,13 +28,13 @@ export default function LangIcon({
         <img src={iconUrl}  className="w-10 h-10"/>
         ) : (
         // Text Fallback
-        <div className="text-[10px] text-red-700 font-bold">{lang}</div>         
+        <div className="text-[8px] text-red-700 font-bold">{lang}</div>         
         )}
       </div>
       
       {/* Percentage */}
-      <div className="absolute top-10 left-6 w-10 h-10 flex items-center justify-center">
-          <span className="relative text-[12px] font-bold text-white">
+      <div className="absolute top-10 left-6 w-10 h-8 flex items-center justify-center">
+          <span className="relative text-[12px] font-bold text-black dark:text-icon">
           {percentText}
           </span>
       </div>

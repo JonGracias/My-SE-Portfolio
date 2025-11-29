@@ -11,19 +11,19 @@ interface ContextProviderTreeProps {
 }
 
 /**
- * Wraps the application in all global context providers.
- * Order matters: Repo context initializes first, then UI context.
+ * Global context provider order:
+ * 1. RepoProvider – loads repos, extracts languages, star data, filters, etc.
+ * 2. UIProvider – manages global UI state (hover, message shell, scrolling).
+ * 3. LanguageIconProvider – uses RepoContext to load icons for languages.
  */
-export function ContextProviderTree({ repos, children }: ContextProviderTreeProps) {
+export default function ContextProviderTree({ repos, children }: ContextProviderTreeProps) {
   return (
     <RepoProvider repos={repos}>
       <UIProvider>
-        <LanguageIconProvider repos={repos}>
+        <LanguageIconProvider>
           {children}
         </LanguageIconProvider>
       </UIProvider>
     </RepoProvider>
   );
 }
-
-export default ContextProviderTree;

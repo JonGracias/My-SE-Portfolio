@@ -7,12 +7,10 @@ import { useState } from "react";
 
 export default function StarButton({ repo }: { repo: Repo }) {
   const { starred, setStarred, count, setCount} = useRepoContext();
-  const { setMessageMessage, clearMessage } = useUIContext();
+  const { setMessage, clearMessage } = useUIContext();
 
   const repoStarred = starred[repo.name] ?? false;
   const starCount = count[repo.name] ?? 0;
-
-  const [starring, setStarring] = useState(false);
 
   //
   // -------------------------------------------------------------------
@@ -95,7 +93,7 @@ export default function StarButton({ repo }: { repo: Repo }) {
       </div>
     );
 
-    setMessageMessage(repo.name, message);
+    setMessage(repo.name, message);
   }
 
   //
@@ -135,7 +133,7 @@ export default function StarButton({ repo }: { repo: Repo }) {
       </section>
     );
 
-    setMessageMessage(repo.name, dialog);
+    setMessage(repo.name, dialog);
   }
 
   //
@@ -155,9 +153,8 @@ export default function StarButton({ repo }: { repo: Repo }) {
             handleStar();
           }}
           className={starButtonClass}
-          disabled={starring}
         >
-          {starring ? "Starring…" : `${starCount} ☆`}
+          {starCount} ☆
         </button>
       ) : (
         <button

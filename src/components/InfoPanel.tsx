@@ -86,32 +86,76 @@ const InfoPanel = forwardRef<RepoCardHandle, Props>(({ repo }, ref) => {
     day: "numeric",
   });
 
-  return (
-    <button className="flex flex-col
-    rounded-lg
-    border border-white dark:border-neutral-900
-    hover:border-blue-400 dark:hover:border-orange-400">
+  function handleProjectClick(repo: Repo) {
+  if (repo.launchUrl) {
+    window.open(repo.launchUrl, "_blank");
+    return;
+  }
 
-      <h1 className="text-2xl font-semibold text-blue-800 dark:text-blue-400 truncate">
-        {repo.name}
+  // Fallback
+  window.location.href = "/support";
+}
+
+
+  return (
+    <button
+      onClick={() => handleProjectClick(repo)}
+      className="
+        group flex flex-col
+        rounded-lg
+        border border-white dark:border-neutral-900
+        hover:border-blue-400 dark:hover:border-orange-400
+        bg-white dark:bg-neutral-900
+        p-3 pb-2 pt-1
+        w-full
+        text-left
+        cursor-pointer
+        select-none
+      ">
+
+      {/* Title (Capitalized) */}
+      <h1
+        className="
+          text-2xl font-bold
+          text-blue-800 dark:text-blue-400
+          truncate
+          w-full
+          tracking-tight
+        "
+      >
+        {repo.name.replace(/(^\w|\s\w)/g, (c) => c.toUpperCase())}
       </h1>
 
-      <div className="text-[11px] uppercase tracking-wide text-gray-500 dark:text-gray-400 mt-1">
+      {/* Updated Date */}
+      <div
+        className="
+          text-[11px] uppercase tracking-wide
+          text-gray-500 dark:text-gray-400
+          mt-1
+        "
+      >
         Updated {formattedDate}
       </div>
 
+      {/* Description */}
       <p
         ref={descRef}
         className="
           text-sm text-gray-600 dark:text-gray-300 leading-5
-          h-[3.5rem] overflow-y-auto overflow-x-hidden
+          h-[3.5rem]
+          overflow-y-auto overflow-x-hidden
           [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
-          opacity-70 my-2
+          opacity-70 group-hover:opacity-100
           transition-opacity duration-200 ease-out
-          group-hover:opacity-100">
-        {repo.description ?? "No description"}
+          mt-2
+          pr-1
+        "
+      >
+        {repo.description ?? "No description available."}
       </p>
+
     </button>
+
   );
 });
 

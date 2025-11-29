@@ -10,6 +10,13 @@ import {
 } from "react";
 import { Repo } from "@/lib/types";
 
+type SortOption = "created" | "updated" | "stars" | "activity";
+
+interface Filters {
+  language: string;
+  sortBy: SortOption;
+}
+
 interface RepoContextType {
   repos: Repo[];
 
@@ -23,63 +30,73 @@ interface RepoContextType {
   setCount: React.Dispatch<React.SetStateAction<Record<string, number>>>;
 
   // Filters
-  filters: { language: string; sortBy: string };
-  setFilters: React.Dispatch<
-    React.SetStateAction<{ language: string; sortBy: string }>
-  >;
+  filters: Filters;
+  setFilters: React.Dispatch<React.SetStateAction<Filters>>;
 
-  // Language controls
+  // Language options
   languages: string[];
+
+  // Filtered / sorted repos
   visibleRepos: Repo[];
+
+  // Display language chosen for each repo based on filters
   displayLanguage: Record<string, string>;
   setDisplayLanguage: React.Dispatch<React.SetStateAction<Record<string, string>>>;
 }
 
 const RepoContext = createContext<RepoContextType | undefined>(undefined);
 
-export function RepoProvider({ repos, children }: { repos: Repo[]; children: ReactNode }) {
-  //
-  // ────────────────────────────────────────────────────────────────
-  // Stars (user-level)
-  // ────────────────────────────────────────────────────────────────
-  //
-  const [starred, setStarred] = useState<Record<string, boolean>>({});
-  const merged: Record<string, boolean> = { ...starred };
+export function RepoProvider({
+  repos,
+  children,
+}: {
+  repos: Repo[];
+  children: ReactNode;
+}) {
+  // ---------------------------------------------------------
+  // STARRED STATE (LOCAL CACHE + REMOTE SYNC)
+  // ---------------------------------------------------------
 
+  const [starred, setStarred] = useState<Record<string, boolean>>({});
+
+  // Load user star cache on mount
   useEffect(() => {
-    const cachedStars = localStorage.getItem("starredCache");
-    if (cachedStars) {
-      setStarred(JSON.parse(cachedStars));
+    const cached = localStorage.getItem("starredCache");
+    if (cached) {
+      try {
+        setStarred(JSON.parse(cached));
+      } catch {}
     }
   }, []);
 
+  // Persist star cache
   useEffect(() => {
     localStorage.setItem("starredCache", JSON.stringify(starred));
   }, [starred]);
 
+  // Refresh from GitHub authenticated star list
   async function refreshStars() {
     try {
       const res = await fetch("/api/github/starred-list", { cache: "no-store" });
       const data = await res.json();
 
       if (data.authed && Array.isArray(data.repos)) {
-        const map: Record<string, boolean> = {};
-        data.repos.forEach((r: any) => {
-          if (r.name) map[r.name] = true;
-        });
-        data.repos.forEach((r: any) => {
-          merged[r.name] = true;
-        });
+        // Remote truth: build a fresh map of GitHub-starred repos
+        const remoteNames = new Set<string>(
+          data.repos
+            .map((r: any) => r?.name)
+            .filter((name: string | undefined): name is string => !!name)
+        );
 
-        // remove local stars that no longer exist
-        Object.keys(merged).forEach((name) => {
-          if (!data.repos.some((r: any) => r.name === name)) {
-            delete merged[name];
-          }
+        setStarred(() => {
+          const next: Record<string, boolean> = {};
+          remoteNames.forEach((name) => {
+            next[name] = true;
+          });
+          return next;
         });
-
-        setStarred(merged);
       }
+      // If not authed, we leave local starred as-is (pure local favorites).
     } catch (err) {
       console.error("refreshStars failed:", err);
     }
@@ -89,52 +106,45 @@ export function RepoProvider({ repos, children }: { repos: Repo[]; children: Rea
     refreshStars();
   }, []);
 
-  //
-  // ────────────────────────────────────────────────────────────────
-  // Star counts (repo-level)
-  // ────────────────────────────────────────────────────────────────
-  //
+  // ---------------------------------------------------------
+  // STAR COUNTS (STATIC PER BUILD + CLIENT UPDATES)
+  // ---------------------------------------------------------
   const [count, setCount] = useState<Record<string, number>>({});
 
   useEffect(() => {
-    const initialCounts: Record<string, number> = {};
-    repos.forEach((r) => (initialCounts[r.name] = r.stargazers_count));
-    setCount(initialCounts);
+    const map: Record<string, number> = {};
+    repos.forEach((r) => (map[r.name] = r.stargazers_count));
+    setCount(map);
   }, [repos]);
 
-  //
-  // ────────────────────────────────────────────────────────────────
-  // Filters
-  // ────────────────────────────────────────────────────────────────
-  //
-  const [filters, setFilters] = useState({
+  // ---------------------------------------------------------
+  // FILTERS
+  // ---------------------------------------------------------
+  const [filters, setFilters] = useState<Filters>({
     language: "All",
     sortBy: "activity",
   });
 
-  //
-  // ────────────────────────────────────────────────────────────────
-  // Languages
-  // ────────────────────────────────────────────────────────────────
-  //
+  // ---------------------------------------------------------
+  // LANGUAGE LIST
+  // ---------------------------------------------------------
   const languages = useMemo(() => {
     const set = new Set<string>();
     repos.forEach((repo) => {
-      if (repo.languages) Object.keys(repo.languages).forEach((l) => set.add(l));
+      if (repo.languages) {
+        Object.keys(repo.languages).forEach((l) => set.add(l));
+      }
       if (repo.language) set.add(repo.language);
     });
     return ["All", ...Array.from(set).sort()];
   }, [repos]);
 
-  //
-  // ────────────────────────────────────────────────────────────────
-  // Visible repos
-  // ────────────────────────────────────────────────────────────────
-  //
+  // ---------------------------------------------------------
+  // FILTERED + SORTED REPOS
+  // ---------------------------------------------------------
   const visibleRepos = useMemo(() => {
     let list = [...repos];
 
-    // Filter
     if (filters.language !== "All") {
       list = list.filter((r) =>
         r.languages
@@ -143,7 +153,6 @@ export function RepoProvider({ repos, children }: { repos: Repo[]; children: Rea
       );
     }
 
-    // Sort
     list.sort((a, b) => {
       switch (filters.sortBy) {
         case "created":
@@ -161,25 +170,31 @@ export function RepoProvider({ repos, children }: { repos: Repo[]; children: Rea
     return list;
   }, [repos, filters]);
 
-  //
-  // ────────────────────────────────────────────────────────────────
-  // Display language per repo
-  // ────────────────────────────────────────────────────────────────
-  //
-  const [displayLanguage, setDisplayLanguage] = useState<Record<string, string>>({});
+  // ---------------------------------------------------------
+  // DISPLAY LANGUAGE PER REPO
+  // ---------------------------------------------------------
+  const [displayLanguage, setDisplayLanguage] =
+    useState<Record<string, string>>({});
 
   useEffect(() => {
     const map: Record<string, string> = {};
 
     repos.forEach((repo) => {
       const langs = repo.languages ? Object.keys(repo.languages) : [];
-      const match = langs.includes(filters.language);
-      map[repo.name] = match ? filters.language : repo.language ?? "Unknown";
+      const selected =
+        filters.language !== "All" && langs.includes(filters.language)
+          ? filters.language
+          : repo.language ?? "Unknown";
+
+      map[repo.name] = selected;
     });
 
     setDisplayLanguage(map);
   }, [repos, filters.language]);
 
+  // ---------------------------------------------------------
+  // PROVIDER VALUE
+  // ---------------------------------------------------------
   return (
     <RepoContext.Provider
       value={{
@@ -209,6 +224,8 @@ export function RepoProvider({ repos, children }: { repos: Repo[]; children: Rea
 
 export function useRepoContext() {
   const ctx = useContext(RepoContext);
-  if (!ctx) throw new Error("useRepoContext must be used inside RepoProvider");
+  if (!ctx) {
+    throw new Error("useRepoContext must be used inside RepoProvider");
+  }
   return ctx;
 }

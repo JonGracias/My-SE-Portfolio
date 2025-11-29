@@ -42,8 +42,12 @@ export default function RepoFilters() {
       <select
         value={filters.sortBy}
         onChange={(e) =>
-          setFilters((prev) => ({ ...prev, sortBy: e.target.value }))
+          setFilters((prev) => ({
+            ...prev,
+            sortBy: e.target.value as typeof prev.sortBy,
+          }))
         }
+
         className="
           px-2 py-1 rounded-lg 
           border border-gray-300 dark:border-gray-700

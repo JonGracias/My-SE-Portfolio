@@ -1,16 +1,14 @@
 "use client";
 
-import { useState, useEffect, useMemo, memo } from "react";
+import { memo } from "react";
 import { useRepoContext } from "@/context/RepoContext";
 import { Repo } from "@/lib/types";
 import { useUIContext } from "@/context/UIContext";
-import  LangIcon  from "./LangIcon";
-import { getLanguageIconUrl } from "@/utils/getLanguageIconUrl";
-import { loadIcon } from "@/utils/iconCache";
+import LangIcon from "./LangIcon";
 
 export default function LanguageDisplay({ repo }: { repo: Repo }) {
   const { setFilters, displayLanguage } = useRepoContext();
-  const { setMessageMessage, clearMessage, setHoveredRepo } = useUIContext();
+  const { setMessage, clearHoveredRepo } = useUIContext();
 
   const langMap = repo.languages ?? {};
   const totalBytes = Object.values(langMap).reduce((a, b) => a + b, 0);
@@ -18,56 +16,55 @@ export default function LanguageDisplay({ repo }: { repo: Repo }) {
   const primaryLanguage = displayLanguage[repo.name] ?? "Unknown";
 
   /* ────────────────────────────────────────────────
-     NORMALIZATION
+     Robust percent()
   ───────────────────────────────────────────────── */
-
-  function percent(bytes: number) {
-    if (!totalBytes) return "0%";
+  function percent(bytes: number | undefined) {
+    if (!totalBytes || !bytes) return "0%";
     return ((bytes / totalBytes) * 100).toFixed(1) + "%";
   }
 
-
   /* ────────────────────────────────────────────────
-     CLICK → OPEN OVERLAY WITH 3-COL GRID OF LANGS
+     CLICK → OPEN OVERLAY OF LANGS
   ───────────────────────────────────────────────── */
   function handleClick() {
-    if (!langMap || Object.keys(langMap).length === 0) {
-      clearMessage();
-      return;
-    }
+    const keys = Object.keys(langMap);
 
-    const entries = Object.entries(langMap).map(([lang, bytes]) => (
-      <button
-        key={lang}
-        className="
-          flex flex-col items-center justify-center
-          hover:bg-blue-100 dark:hover:bg-neutral-700
-          rounded-md p-2 text-sm h-[4rem]
-        "
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          clearMessage();
-          setHoveredRepo(null);
-          setFilters((f) => ({ ...f, language: lang }));
-        }}
-      >
-        <LangIcon key={lang} lang={lang} percentText={percent(bytes)} />
-      </button>
-    ));
+    if (keys.length === 0) return;
+
+    const entries = keys.map((lang) => {
+      const bytes = langMap[lang];
+
+      return (
+        <button
+          key={lang}
+          className="
+            flex flex-col items-center justify-center
+            border border-white dark:border-neutral-900
+            hover:border-blue-400 dark:hover:border-orange-400
+            rounded-md text-sm h-[3.3rem] w-[3.3rem]
+          "
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            clearHoveredRepo();
+            setFilters((f) => ({ ...f, language: lang }));
+          }}
+        >
+          <LangIcon lang={lang} percentText={percent(bytes)} />
+        </button>
+      );
+    });
 
     const message = (
       <section>
-        {/* List of Languages */}
-        <div className="grid grid-cols-2 gap-6 p-4">{entries}
+        {/* Languages Popup */}
+        <div className="w-[8rem] grid grid-cols-2 gap-10">
+          {entries}
         </div>
       </section>
     );
 
-    setMessageMessage(
-      repo.name,
-      message
-    );
+    setMessage(repo.name, message);
   }
 
   /* ────────────────────────────────────────────────
@@ -78,7 +75,10 @@ export default function LanguageDisplay({ repo }: { repo: Repo }) {
       onClick={handleClick}
       className="overflow-visible w-[4rem] h-[4rem] flex items-center justify-center cursor-pointer"
     >
-      <LangIcon key={primaryLanguage} lang={primaryLanguage} percentText={percent(langMap[primaryLanguage])}/>
+      <LangIcon
+        lang={primaryLanguage}
+        percentText={percent(langMap[primaryLanguage])}
+      />
     </button>
   );
 }
