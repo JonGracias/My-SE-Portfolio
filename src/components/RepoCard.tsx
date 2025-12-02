@@ -86,6 +86,7 @@ export default memo(function RepoCard({ repo }: { repo: Repo }) {
         "bg-white dark:bg-neutral-900",
         "transition-transform duration-200 ease-out",
         "p-4 relative",
+        "w-full",
         "flex flex-col min-h-[14rem] min-w-[14rem]",
       ].join(" ")}>
 

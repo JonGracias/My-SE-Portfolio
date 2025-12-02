@@ -93,17 +93,19 @@ const InfoPanel = forwardRef<RepoCardHandle, Props>(
       <button
         onClick={() => handleProjectClick(repo)}
         className={[
-          "group flex flex-col w-full text-left cursor-pointer select-none",
+          "group flex flex-col text-left cursor-pointer select-none",
           "rounded-lg border border-white dark:border-neutral-900",
+          "overflow-hidden w-[13rem]",
           "bg-white dark:bg-neutral-900",
           "hover:border-blue-400 dark:hover:border-orange-400",
-          large ? "p-4 gap-3 h-full" : "p-3 pb-2 pt-1",
+          large ? "p-4 gap-3 h-full w-full" : "p-3 pb-2 pt-1",
         ].join(" ")}
       >
         {/* Title */}
         <h1
           className={[
-            "font-bold text-blue-800 dark:text-blue-400 truncate w-full tracking-tight",
+            "font-bold text-blue-800 dark:text-blue-400 tracking-tight",
+            "w-full overflow-hidden whitespace-nowrap truncate",
             large ? "text-2xl" : "text-xl",
           ].join(" ")}
         >
