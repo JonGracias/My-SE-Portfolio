@@ -9,7 +9,7 @@
 ## Env vars (set locally in `.env.local` and in Azure App Settings)
 - GITHUB_USERNAME
 - GITHUB_TOKEN (optional but recommended)
-- NEXT_PUBLIC_BASE_URL (http://localhost:3000 for dev, your site URL in prod)
+- NEXT_PUBLIC_BASE_URL (http://localhost:8080 for dev, your site URL in prod)
 - GITHUB_CLIENT_ID=YOUR_GITHUB_CLIENT_ID
 - GITHUB_CLIENT_SECRET=YOUR_GITHUB_CLIENT_SECRET
 

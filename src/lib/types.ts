@@ -6,8 +6,15 @@ export type Repo = {
   description: string | null;
   stargazers_count: number;
   language: string | null;
+  languages: Record<string, number>
+  languages_abv: Record<string, number> 
   forks_count: number;
   open_issues_count: number;
-  updated_at: string;
   owner: string;
+  created_at: string;
+  pushed_at: string;
+  updated_at: string;
+  launchUrl?: string | null;
+  readme?: string | null;
 };
+
