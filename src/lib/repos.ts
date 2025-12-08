@@ -1,4 +1,3 @@
-﻿// src/lib/types.ts
 export type Repo = {
   id: number;
   name: string;
@@ -18,3 +17,15 @@ export type Repo = {
   readme?: string | null;
 };
 
+export type Position = {
+  top: number;
+  left: number;
+  height: number;
+  width: number;
+  scale: number;
+};
+
+export type RepoCardProps = {
+  repo: Repo;
+  position?: Partial<Position>;
+};

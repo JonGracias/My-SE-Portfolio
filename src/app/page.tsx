@@ -1,9 +1,7 @@
-﻿// src/app/page.tsx
-
-import ContextProviderTree from "@/context/ContextProviderTree";
+﻿import ContextProviderTree from "@/context/ContextProviderTree";
 import RepoList from "@/components/RepoList";
 import { fetchRepos } from "@/lib/github";
-import { Repo } from "@/lib/types";
+import { Repo } from "@/lib/repos";
 import { userAgent } from "next/server";
 import { headers } from "next/headers";
 
@@ -32,7 +30,10 @@ export const metadata = {
 
 
 export default async function Page() {
-  const repos: Repo[] = await fetchRepos();
+  let repos: Repo[] = [];
+  repos = await fetchRepos(); // existing library function
+
+
   const raw = headers();                // ReadonlyHeaders (Next.js)
   const h = new Headers(await raw);           // Convert to Headers (Web API)
 

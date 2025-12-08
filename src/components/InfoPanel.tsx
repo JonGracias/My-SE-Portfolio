@@ -7,12 +7,11 @@ import {
   forwardRef,
   memo,
 } from "react";
-import { Repo } from "@/lib/types";
+import { Repo } from "@/lib/repos";
 import { useUIContext } from "@/context/UIContext";
 
 interface Props {
   repo: Repo;
-  
   isActive: boolean;
   isLarge?: boolean
 }

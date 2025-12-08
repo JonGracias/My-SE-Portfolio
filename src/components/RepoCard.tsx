@@ -1,25 +1,12 @@
 ﻿"use client";
 
-import { useEffect, useRef, memo, useState } from "react";
-import { Repo } from "@/lib/types";
+import { useEffect, useRef, memo } from "react";
 import LanguageDisplay from "./LanguageDisplay";
 import StarButton from "./StarButton";
 import GitHubButton from "./GitHubButton";
 import { useUIContext } from "@/context/UIContext";
 import InfoPanel, { RepoCardHandle } from "./InfoPanel";
-
-interface Position {
-  top: number;
-  left: number;
-  height: number;
-  width: number;
-  scale: number;
-}
-
-interface RepoCardProps {
-  repo: Repo;
-  position?: Partial<Position>;
-}
+import type { Position, RepoCardProps  } from "@/lib/repos";
 
 const DEFAULT_POS: Position = {
   top: 0,

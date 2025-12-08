@@ -1,8 +1,7 @@
 "use client";
 
-import { memo } from "react";
 import { useRepoContext } from "@/context/RepoContext";
-import { Repo } from "@/lib/types";
+import { Repo } from "@/lib/repos";
 import { useUIContext } from "@/context/UIContext";
 import LanguageEntries from "./LanguageEntries";
 import LangIcon from "./LangIcon";

@@ -4,13 +4,16 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build:api": "tsc -p api",
     "start": "next start",
+    "build": "next build",
     "lint": "eslint"
   },
   "dependencies": {
+    "@fontsource-variable/geist": "^5.2.8",
+    "geist": "^1.5.1",
     "mobile-detect": "^1.4.5",
-    "next": "16.0.1",
+    "next": "^16.0.7",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-markdown": "^10.1.0",
@@ -19,6 +22,7 @@
     "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
+    "@azure/functions": "^3.4.0",
     "@floating-ui/react": "^0.27.16",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",

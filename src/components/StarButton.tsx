@@ -1,6 +1,6 @@
 "use client";
 
-import { Repo } from "@/lib/types";
+import { Repo } from "@/lib/repos";
 import { useStars } from "@/context/StarContext";
 import { useUIContext } from "@/context/UIContext";
 import { useCallback } from "react";

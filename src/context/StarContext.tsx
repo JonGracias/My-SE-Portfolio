@@ -9,6 +9,7 @@ import {
     useCallback,
 } from "react";
 import { useRepoContext } from "@/context/RepoContext";
+import { Repo } from "@/lib/repos";
 
 interface StarContextType {
     starred: Record<string, boolean>;
@@ -73,7 +74,7 @@ export function StarProvider({ children }: { children: ReactNode }) {
 
         if (data.authed && Array.isArray(data.repos)) {
             const next: Record<string, boolean> = {};
-            data.repos.forEach((r: any) => {
+            data.repos.forEach((r: Repo) => {
             if (r?.name) next[r.name] = true;
             });
             setStarred(next);
@@ -96,7 +97,7 @@ export function StarProvider({ children }: { children: ReactNode }) {
 
             const userStarMap: Record<string, boolean> = {};
 
-            data.repos.forEach((repo: any) => {
+            data.repos.forEach((repo: Repo) => {
             if (repo?.name) userStarMap[repo.name] = true;
             });
 

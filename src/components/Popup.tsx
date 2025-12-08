@@ -1,14 +1,5 @@
 "use client";
-import React, { useState } from "react";
-import { useUIContext } from "@/context/UIContext";
-
-interface Position {
-  top: number;
-  left: number;
-  height: number;
-  width: number;
-  scale: number;
-}
+import type { Position } from "@/lib/repos";
 
 interface PopupProps {
   object: React.ReactNode;

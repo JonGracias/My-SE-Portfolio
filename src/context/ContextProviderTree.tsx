@@ -4,7 +4,7 @@ import { RepoProvider } from "./RepoContext";
 import { UIProvider } from "./UIContext";
 import { LanguageIconProvider } from "./LanguageIconContext";
 import { StarProvider } from "./StarContext";
-import { Repo } from "@/lib/types";
+import { Repo } from "@/lib/repos";
 
 interface ContextProviderTreeProps {
   repos: Repo[];

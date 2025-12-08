@@ -2,16 +2,17 @@
 
 import React from "react";
 import LangIcon  from "./LangIcon"; 
+import type { Filters } from "@/lib/filters";
 
 interface Props {
     langMap: Record<string, number>;
     clearHoveredRepo: () => void;
-    setFilters: (fn: (f: any) => any) => void;
+    setFilters: React.Dispatch<React.SetStateAction<Filters>>;
 }
 
 export default function LanguageEntries({ langMap, clearHoveredRepo, setFilters }: Props) {
-    const totalBytes = Object.values(langMap).reduce((a, b) => a + b, 0);
 
+    const totalBytes = Object.values(langMap).reduce((a, b) => a + b, 0);
     const keys = Object.keys(langMap);
     if (keys.length === 0) return null;
 

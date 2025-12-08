@@ -6,16 +6,8 @@ import RepoFilters from "./RepoFilters";
 import Popup from "./Popup";
 import { useRepoContext } from "@/context/RepoContext";
 import { useUIContext } from "@/context/UIContext";
-import { Repo } from "@/lib/types";
 import LargeRepoCard from "./LargeRepoCard";
-
-interface Position {
-  top: number;
-  left: number;
-  height: number;
-  width: number;
-  scale: number;
-}
+import type { Position, Repo } from "@/lib/repos";
 
 export default function RepoList() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -25,7 +17,6 @@ export default function RepoList() {
   const [hoverPos, setHoverPos] = useState<Position>(defaultPos);
   const [messagePos, setMessagePos] = useState<Position>(defaultPos);
   const [largerPos, setLargerPos] = useState<Position>(defaultPos);
-
   const { visibleRepos } = useRepoContext();
 
   const {

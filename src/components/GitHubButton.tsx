@@ -1,6 +1,6 @@
 "use client";
 
-import { Repo } from "@/lib/types";
+import { Repo } from "@/lib/repos";
 
 export default function GitHubButton({ repo }: { repo: Repo }) {
   const githubUrl = repo.html_url;

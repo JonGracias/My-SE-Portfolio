@@ -8,7 +8,7 @@ import React, {
   useCallback,
 } from "react";
 import MessageShell from "@/components/MessageShell";
-import { Repo } from "@/lib/types";
+import { Repo } from "@/lib/repos";
 
 /* -------------------------------------------------------
  * Types
@@ -42,7 +42,7 @@ const UIContext = createContext<UIContextType | undefined>(undefined);
 
 interface UIProviderProps {
   children: React.ReactNode;
-  isMobile: boolean;   // <-- IMPORTANT
+  isMobile: boolean; 
 }
 
 

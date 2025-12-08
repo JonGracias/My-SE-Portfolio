@@ -4,7 +4,6 @@ import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
-
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import type { Code as MdastCode, InlineCode as MdastInlineCode } from "mdast";
 import oneDark from "react-syntax-highlighter/dist/esm/styles/prism/one-dark";
@@ -12,11 +11,11 @@ import oneDark from "react-syntax-highlighter/dist/esm/styles/prism/one-dark";
 
 
 
-import { Repo } from "@/lib/types";
+import { Repo } from "@/lib/repos";
 
 interface Props {
   repo: Repo;
-  maxHeight?: number; // optional: pixels before collapsing
+  maxHeight?: number; 
 }
 
 export default function GHReadMe({ repo, maxHeight = 400 }: Props) {

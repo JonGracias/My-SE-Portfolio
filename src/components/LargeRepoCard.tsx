@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, memo } from "react";
-import { Repo } from "@/lib/types";
 import StarButton from "./StarButton";
 import GitHubButton from "./GitHubButton";
 import { useUIContext } from "@/context/UIContext";
@@ -9,19 +8,7 @@ import InfoPanel, { RepoCardHandle } from "./InfoPanel";
 import LanguageEntries from "./LanguageEntries";
 import { useRepoContext } from "@/context/RepoContext";
 import GHReadMe from "./GHReadMe";
-
-interface Position {
-  top: number;
-  left: number;
-  height: number;
-  width: number;
-  scale: number;
-}
-
-interface LargeCardProps {
-  repo: Repo;
-  position?: Partial<Position>;
-}
+import type { Position, RepoCardProps } from "@/lib/repos";
 
 const DEFAULT_POS: Position = {
   top: 0,
@@ -34,7 +21,7 @@ const DEFAULT_POS: Position = {
 export default memo(function LargeRepoCard({
   repo,
   position = {},
-}: LargeCardProps) {
+}: RepoCardProps) {
   const finalPos: Position = { ...DEFAULT_POS, ...position };
   const infoRef = useRef<RepoCardHandle>(null);
   const cardRef = useRef<HTMLDivElement>(null);

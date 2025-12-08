@@ -8,18 +8,11 @@ import {
   useState,
   ReactNode,
 } from "react";
-import { Repo } from "@/lib/types";
-
-type SortOption = "created" | "updated" | "stars" | "activity";
-
-interface Filters {
-  language: string;
-  sortBy: SortOption;
-}
+import type { Filters } from "@/lib/filters";
+import { Repo } from "@/lib/repos";
 
 interface RepoContextType {
   repos: Repo[];
-  // Filters
   filters: Filters;
   setFilters: React.Dispatch<React.SetStateAction<Filters>>;
 
