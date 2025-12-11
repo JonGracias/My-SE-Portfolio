@@ -10,7 +10,7 @@
     "lint": "eslint"
   },
    "engines": {
-    "node": "22.9.0"
+    "node": "20"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.8",
