@@ -31,7 +31,7 @@ export const metadata = {
 
 export default async function Page() {
   let repos: Repo[] = [];
-  repos = await fetchRepos(); // existing library function
+ // repos = await fetchRepos(); // existing library function
 
 
   const raw = headers();                // ReadonlyHeaders (Next.js)
@@ -41,7 +41,7 @@ export default async function Page() {
   const isMobile = ua.device.type === "mobile" || ua.device.type === "tablet";
 
   return (
-    <ContextProviderTree repos={repos} isMobile={isMobile}>
+    //<ContextProviderTree repos={repos} isMobile={isMobile}>
       <main className="relative flex flex-col min-h-screen overflow-hidden">
         {/* Header / Intro */}
         <section
@@ -71,7 +71,7 @@ export default async function Page() {
         </section>
 
 
-        {/* Repo Grid */}
+        {/* Repo Grid 
         <section
           aria-label="Repository List"
           className="
@@ -80,11 +80,11 @@ export default async function Page() {
             mb-5
           "
         >
-          {/* Accessibility + SEO secondary heading */}
+          {/* Accessibility + SEO secondary heading 
           <h2 className="sr-only">Projects</h2>
 
           <RepoList />
-        </section>
+        </section> */}
 
 
         {/* Footer */}
@@ -93,6 +93,6 @@ export default async function Page() {
         </footer>
 
       </main>
-    </ContextProviderTree>
+    //</ContextProviderTree>
   );
 }
