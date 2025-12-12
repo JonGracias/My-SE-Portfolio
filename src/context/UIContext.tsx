@@ -1,11 +1,11 @@
 "use client";
-
 import React, {
   createContext,
   useContext,
   useState,
   ReactNode,
   useCallback,
+  useEffect,
 } from "react";
 import MessageShell from "@/components/MessageShell";
 import { Repo } from "@/lib/repos";
@@ -30,26 +30,26 @@ interface UIContextType {
 
   scrolling: boolean;
   setScrolling: (state: boolean) => void;
-
+  
   clearMessage: () => void;
   clearHoveredRepo: () => void;
   clearLargerRepo: () => void;
   clearAllRepos: () => void;
   isMobile: boolean;  
+  setIsMobile: (state: boolean) => void;
 }
 
 const UIContext = createContext<UIContextType | undefined>(undefined);
 
 interface UIProviderProps {
   children: React.ReactNode;
-  isMobile: boolean; 
 }
 
 
 /* -------------------------------------------------------
  * Provider
  * ------------------------------------------------------- */
-export function UIProvider({ children, isMobile }: UIProviderProps) {
+export function UIProvider({ children }: UIProviderProps) {
   const [hoveredRepo, _setHoveredRepo] = useState<Repo | null>(null);
   const [largerRepo, _setLargerRepo] = useState<Repo | null>(null);
   
@@ -58,7 +58,17 @@ export function UIProvider({ children, isMobile }: UIProviderProps) {
 
   // Flag used to hide messages temporarily during scrolling
   const [scrolling, setScrolling] = useState<boolean>(false);
+  const [isMobile, setIsMobile ] = useState<boolean>(false);
 
+
+  useEffect(() => {
+    const mq = window.matchMedia("(pointer: coarse)");
+    setIsMobile(mq.matches);
+
+    const handler = () => setIsMobile(mq.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   /* -----------------------------------------------------
    * Larger Repos
@@ -131,7 +141,8 @@ export function UIProvider({ children, isMobile }: UIProviderProps) {
         clearLargerRepo,
         clearAllRepos,
         
-        isMobile
+        isMobile,
+        setIsMobile,
       }}
     >
       {children}

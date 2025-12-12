@@ -25,15 +25,16 @@ interface RepoContextType {
   // Display language chosen for each repo based on filters
   displayLanguage: Record<string, string>;
   setDisplayLanguage: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+
+  loading: boolean;
+  setLoading: (state: boolean) => void;
 }
 
 const RepoContext = createContext<RepoContextType | undefined>(undefined);
 
 export function RepoProvider({
-  repos,
   children,
 }: {
-  repos: Repo[];
   children: ReactNode;
 }) {
   // ---------------------------------------------------------
@@ -43,6 +44,20 @@ export function RepoProvider({
     language: "All",
     sortBy: "activity",
   });
+
+  const [repos, setRepos] = useState<Repo[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      const res = await fetch("/api/github/repos");
+      const data = await res.json();
+      setRepos(data);
+      setLoading(false);
+    }
+
+    load();
+  }, []);
 
   // ---------------------------------------------------------
   // LANGUAGE LIST
@@ -127,6 +142,9 @@ export function RepoProvider({
 
         displayLanguage,
         setDisplayLanguage,
+
+        loading,
+        setLoading
       }}
     >
       {children}

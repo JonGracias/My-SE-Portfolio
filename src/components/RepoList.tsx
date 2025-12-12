@@ -180,7 +180,7 @@ export default function RepoList() {
           relative flex flex-col h-full shadow-md rounded-xl
           bg-gray-100 dark:bg-gray-800
           border border-gray-300 dark:border-gray-700
-          w-[19.1rem] md:w-[32rem] lg:w-[50rem] xl:w-[65rem]
+          w-[19.1rem] md:w-[32rem] lg:w-[45rem] xl:w-[50rem]
           [height:calc(100dvh-18rem)]
           min-h-[18rem]
           max-h-[90rem]">

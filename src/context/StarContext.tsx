@@ -10,7 +10,8 @@ import {
 } from "react";
 import { Repo } from "@/lib/repos";
 import { getCookie } from "@/utils/getCookie";
-import { useRepoContext } from "@/context/RepoContext";
+import { useRepoContext } from "./RepoContext";
+import { useAuth } from "./AuthProvider";
 
 interface StarContextType {
     starred: Record<string, boolean>;
@@ -31,6 +32,7 @@ const StarContext = createContext<StarContextType | undefined>(undefined);
 
 export function StarProvider({ children }: { children: ReactNode }) {
     const { repos } = useRepoContext();
+    const { isLogged } = useAuth();
 
     //
     // ----------------------------------------------------
@@ -42,9 +44,8 @@ export function StarProvider({ children }: { children: ReactNode }) {
     const apiBase = process.env.NEXT_PUBLIC_API_BASE || "";
 
     // FLAGS
-    const [isLogin, setIsLogin] = useState(false);
-    const [isLogged, setIsLogged] = useState(false);
     const [isStarring, setIsStarring] = useState(false);
+    const [isLogin, setIsLogin] = useState(false);
 
 
     //
@@ -121,30 +122,10 @@ export function StarProvider({ children }: { children: ReactNode }) {
     // ----------------------------------------------------
     //
     useEffect(() => {
-        async function checkLogin() {
-            try {
-            const ghToken = getCookie('gh_token'); // Access the cookie
-
-            if (ghToken) {
-                setIsLogged(true); // User is logged in if token exists
-            } else {
-                setIsLogged(false); // If no token, user is not logged in
-            }
-
-            // Flash UX message
-            const t = setTimeout(() => setIsLogged(false), 2000);
-            return () => clearTimeout(t);
-            } catch (err) {
-            console.error("Login check failed:", err);
-            }
-        }
-        checkLogin();
-        refreshStars(); 
-    }, [refreshStars]);
-
-
-
-
+        if(isLogged == true){
+            refreshStars()
+        };
+    }, [isLogged]);
     //
     // ----------------------------------------------------
     // STAR a repo

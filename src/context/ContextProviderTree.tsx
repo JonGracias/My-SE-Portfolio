@@ -4,11 +4,10 @@ import { RepoProvider } from "./RepoContext";
 import { UIProvider } from "./UIContext";
 import { LanguageIconProvider } from "./LanguageIconContext";
 import { StarProvider } from "./StarContext";
+import { AuthProvider } from "./AuthProvider";
 import { Repo } from "@/lib/repos";
 
 interface ContextProviderTreeProps {
-  repos: Repo[];
-  isMobile: boolean;
   children: React.ReactNode;
 }
 
@@ -18,16 +17,18 @@ interface ContextProviderTreeProps {
  * 2. UIProvider – manages global UI state (hover, message shell, scrolling).
  * 3. LanguageIconProvider – uses RepoContext to load icons for languages.
  */
-export default function ContextProviderTree({ repos, isMobile, children }: ContextProviderTreeProps) {
+export default function ContextProviderTree({ children }: ContextProviderTreeProps) {
   return (
-    <RepoProvider repos={repos}>
-      <UIProvider isMobile={isMobile}>
-        <LanguageIconProvider>
-          <StarProvider>
-            {children}
-          </StarProvider>
-        </LanguageIconProvider>
-      </UIProvider>
-    </RepoProvider>
+    <AuthProvider>  
+      <RepoProvider>
+        <UIProvider>
+          <LanguageIconProvider>
+            <StarProvider>
+              {children}
+            </StarProvider>
+          </LanguageIconProvider>
+        </UIProvider>
+      </RepoProvider>
+    </AuthProvider>
   );
 }
