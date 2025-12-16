@@ -6,11 +6,11 @@ import type { Filters } from "@/lib/filters";
 
 interface Props {
     langMap: Record<string, number>;
-    clearHoveredRepo: () => void;
+    clearAllRepos: () => void;
     setFilters: React.Dispatch<React.SetStateAction<Filters>>;
 }
 
-export default function LanguageEntries({ langMap, clearHoveredRepo, setFilters }: Props) {
+export default function LanguageEntries({ langMap, clearAllRepos, setFilters }: Props) {
 
     const totalBytes = Object.values(langMap).reduce((a, b) => a + b, 0);
     const keys = Object.keys(langMap);
@@ -38,8 +38,12 @@ export default function LanguageEntries({ langMap, clearHoveredRepo, setFilters 
                 onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                clearHoveredRepo();
-                setFilters((f) => ({ ...f, language: lang }));
+                clearAllRepos();
+                setFilters((f) => ({
+                        ...f,
+                        languages: [lang],
+                    }));
+
                 }}
             >
                 <LangIcon lang={lang} percentText={percent(bytes)} />

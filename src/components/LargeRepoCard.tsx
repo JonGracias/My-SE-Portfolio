@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, memo } from "react";
+import { useRef, memo, useState, useCallback, useEffect } from "react";
 import StarButton from "./StarButton";
 import GitHubButton from "./GitHubButton";
 import { useUIContext } from "@/context/UIContext";
@@ -25,15 +25,46 @@ export default memo(function LargeRepoCard({
   const finalPos: Position = { ...DEFAULT_POS, ...position };
   const infoRef = useRef<RepoCardHandle>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+  const defaultPos: Position = { top: 0, left: 0, height: 0, width: 0, scale: 0, };
+  const [messagePos, setMessagePos] = useState<Position>(defaultPos);
+
+  // Reactive window width
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1200
+  );
 
   const {
+    message,
     largerRepo,
     clearAllRepos,
-    clearHoveredRepo,
-    clearMessage
   } = useUIContext();
   const { setFilters } = useRepoContext();
   const isActive = largerRepo?.name === repo.name;
+
+  const computeMessagePosition = useCallback(
+    (rect: DOMRect) => {
+      const myRem = parseFloat(
+        getComputedStyle(document.documentElement).fontSize
+      );
+      // ---------------------------------------
+      // Message Position
+      // ---------------------------------------
+      let top = rect.top;
+      let left = rect.left;
+      let height = rect.height * .45;
+      let width = rect.width;
+      let scale = 1;
+
+      return { top, left, height, width, scale };
+    },[windowWidth]);
+
+   useEffect(() => {
+      const rect = cardRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      const pos = computeMessagePosition(rect)
+
+      setMessagePos(pos);
+  },[message]);
 
   // Language map and derived stats
   const langMap = repo.languages ?? {};
@@ -66,6 +97,22 @@ export default memo(function LargeRepoCard({
         height: finalPos.height,
       }}
     >
+        {/* Message */}
+        {message && largerRepo && message.repoName === largerRepo.name &&(
+
+          <div className="fixed z-[500] flex items-center justify-center"
+            style={{
+              top: messagePos.top,
+              left: messagePos.left,
+              width: messagePos.width,
+              height: messagePos.height,
+              transform: `scale(${messagePos.scale})`,
+              transformOrigin: "center center"}}
+            >
+            {message.content} 
+          </div>
+        )}
+
       {/* Close button */}
       <button
         onClick={(e) => {
@@ -121,7 +168,7 @@ export default memo(function LargeRepoCard({
             <div className="mt-1">
               <LanguageEntries
                 langMap={langMap}
-                clearHoveredRepo={clearAllRepos}
+                clearAllRepos={clearAllRepos}
                 setFilters={setFilters}
               />
             </div>

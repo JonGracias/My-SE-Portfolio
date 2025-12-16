@@ -194,7 +194,7 @@ export default function RepoList() {
           relative flex flex-col h-full shadow-md rounded-xl
           bg-gray-100 dark:bg-gray-800
           border border-gray-300 dark:border-gray-700
-          w-[19.1rem] md:w-[32rem] lg:w-[45rem] xl:w-[50rem]
+          w-[19.1rem] md:w-[46.5rem] lg:w-[55rem]
           [height:calc(100dvh-14rem)]
           min-h-[18rem]
           max-h-[90rem]">
@@ -224,7 +224,7 @@ export default function RepoList() {
         )}
 
         {/* Message */}
-        {message && hoveredRepo && message.repoName === hoveredRepo.name && (
+        {message && hoveredRepo && message.repoName === hoveredRepo.name && !largerRepo &&(
 
           <div className="fixed z-[25] flex items-center justify-center"
             style={{
@@ -254,8 +254,8 @@ export default function RepoList() {
         <div
         ref={gridContainerRef}
           className="
-            grid gap-5
-            grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 
+            grid gap-6
+            grid-cols-1 sm:grid-cols-1 md:grid-cols-3 
             auto-rows-[14rem]
             [grid-template-columns:repeat(auto-fill,_14rem)]
             px-5 py-10

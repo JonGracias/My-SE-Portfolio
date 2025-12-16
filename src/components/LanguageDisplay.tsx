@@ -8,7 +8,7 @@ import LangIcon from "./LangIcon";
 
 export default function LanguageDisplay({ repo }: { repo: Repo }) {
   const { setFilters, displayLanguage } = useRepoContext();
-  const { setMessage, clearHoveredRepo } = useUIContext();
+  const { setMessage, clearAllRepos } = useUIContext();
 
   const langMap = repo.languages ?? {};
   const totalBytes = Object.values(langMap).reduce((a, b) => a + b, 0);
@@ -31,7 +31,7 @@ export default function LanguageDisplay({ repo }: { repo: Repo }) {
       repo.name,
       <LanguageEntries
         langMap={langMap}
-        clearHoveredRepo={clearHoveredRepo}
+        clearAllRepos={clearAllRepos}
         setFilters={setFilters}
       />
     );
