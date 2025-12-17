@@ -8,7 +8,7 @@ import React, {
   useEffect,
 } from "react";
 import MessageShell from "@/components/MessageShell";
-import { Repo } from "@/lib/repos";
+import { Position, Repo } from "@/lib/repos";
 
 /* -------------------------------------------------------
  * Types
@@ -22,6 +22,10 @@ interface UIContextType {
   hoveredRepo: Repo | null;
   setHoveredRepo: (repo: Repo | null) => void;
 
+
+  hoverPos: Position | null;
+  setHoverPos: (pos: Position | null) => void;
+
   largerRepo: Repo | null;
   setLargerRepo: (repo: Repo | null) => void;
 
@@ -30,12 +34,13 @@ interface UIContextType {
 
   scrolling: boolean;
   setScrolling: (state: boolean) => void;
-  
+
   clearMessage: () => void;
   clearHoveredRepo: () => void;
   clearLargerRepo: () => void;
   clearAllRepos: () => void;
 }
+
 
 const UIContext = createContext<UIContextType | undefined>(undefined);
 
@@ -50,6 +55,7 @@ interface UIProviderProps {
 export function UIProvider({ children }: UIProviderProps) {
   const [hoveredRepo, _setHoveredRepo] = useState<Repo | null>(null);
   const [largerRepo, _setLargerRepo] = useState<Repo | null>(null);
+  const [hoverPos, setHoverPos] = useState<Position | null>(null);
   
   // The global popup message
   const [message, _setMessage] = useState<RepoMessage | null>(null);
@@ -97,6 +103,7 @@ export function UIProvider({ children }: UIProviderProps) {
     _setHoveredRepo(repo);
   }, []);
 
+
   const clearHoveredRepo = useCallback(() => {
     _setHoveredRepo(null);
   }, []);
@@ -116,24 +123,27 @@ export function UIProvider({ children }: UIProviderProps) {
         hoveredRepo,
         setHoveredRepo,
 
+        hoverPos,
+        setHoverPos,
+
         largerRepo,
         setLargerRepo,
-        
+
         message,
         setMessage,
-        
+
         scrolling,
         setScrolling,
-        
+
         clearMessage,
         clearHoveredRepo,
         clearLargerRepo,
         clearAllRepos,
-      
       }}
     >
       {children}
     </UIContext.Provider>
+
   );
 }
 

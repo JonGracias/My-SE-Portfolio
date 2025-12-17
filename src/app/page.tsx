@@ -1,14 +1,6 @@
 ﻿import ContextProviderTree from "@/context/ContextProviderTree";
 import RepoList from "@/components/RepoList";
 import { fetchRepos } from "@/lib/github";
-import { Repo } from "@/lib/repos";
-
-// --------------------
-// Rendering Strategy
-// --------------------
-// Revalidate at most once per hour.
-// Enables CDN caching + background refresh.
-export const revalidate = 3600;
 
 // --------------------
 // SEO Metadata
@@ -33,9 +25,11 @@ export const metadata = {
   },
 };
 
+
 export default async function Page() {
+  const repos = await fetchRepos();
   return (
-    <ContextProviderTree>
+    <ContextProviderTree repos={repos}>
       <main className="
           grid
           grid-rows-[auto,1fr,auto]

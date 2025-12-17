@@ -34,8 +34,10 @@ const RepoContext = createContext<RepoContextType | undefined>(undefined);
 
 export function RepoProvider({
   children,
+  initialRepos,
 }: {
   children: ReactNode;
+  initialRepos: Repo[];
 }) {
   // ---------------------------------------------------------
   // FILTERS
@@ -45,20 +47,10 @@ export function RepoProvider({
     sortBy: "activity",
   });
 
-  const [repos, setRepos] = useState<Repo[]>([]);
+  const [repos, setRepos] = useState<Repo[]>(initialRepos);
   const [loading, setLoading] = useState(true);
   const [displayLanguage, setDisplayLanguage] = useState<Record<string, string>>({});
 
-  useEffect(() => {
-    async function load() {
-      const res = await fetch("/api/github/repos");
-      const data = await res.json();
-      setRepos(data);
-      setLoading(false);
-    }
-
-    load();
-  }, []);
 
   // ---------------------------------------------------------
   // LANGUAGE LIST

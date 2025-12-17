@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useState, useCallback, JSX } from "react";
 import RepoCard from "./RepoCard";
 import RepoFilters from "./RepoFilters";
 import { useRepoContext } from "@/context/RepoContext";
@@ -17,6 +17,8 @@ export default function RepoList() {
   const [messagePos, setMessagePos] = useState<Position>(defaultPos);
   const [largerPos, setLargerPos] = useState<Position>(defaultPos);
   const { visibleRepos } = useRepoContext();
+  const hoverCardCache = useRef<Record<string, JSX.Element>>({});
+
 
   const {
     hoveredRepo,
@@ -43,29 +45,9 @@ export default function RepoList() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  /* -----------------------------------------------------------
-   * Popup Position Calculation (Single Source of Truth)
-   * ----------------------------------------------------------- */
-  const computeMessagePosition = useCallback(
-    (pop:Position) => {
-      const myRem = parseFloat(
-        getComputedStyle(document.documentElement).fontSize
-      );
-      // ---------------------------------------
-      // Message Position
-      // ---------------------------------------
-      let top = pop.top;
-      let left = pop.left;
-      let height = pop.height;
-      let width = pop.width;
-      let scale = 1;
-
-      return { top, left, height, width, scale };
-    },[scrollContainerRef, windowWidth]);
     
   const largeRepoPosition = useCallback(
-    (rect: DOMRect) => {
+    () => {
       const mainContainerRect =
         mainContainerRef.current?.getBoundingClientRect();
 
@@ -139,9 +121,9 @@ export default function RepoList() {
 
 
       const rect = element.getBoundingClientRect();
-      const lpos = largeRepoPosition(rect);
+      const lpos = largeRepoPosition();
       const pos = computePopupPosition(rect);
-      const mess = computeMessagePosition(pos)
+      const mess = computePopupPosition(rect);
 
       setHoverPos(pos);
       setMessagePos(mess);
@@ -183,6 +165,21 @@ export default function RepoList() {
     setLargerRepo(repo)
   }
 
+  function getHoverCard(repo: Repo) {
+    const key = repo.name;
+
+    if (!hoverCardCache.current[key]) {
+      hoverCardCache.current[key] = (
+        <RepoCard
+          repo={repo}
+        />
+      );
+    }
+
+    return hoverCardCache.current[key];
+  }
+
+
 
   /* -----------------------------------------------------------
    * RENDER
@@ -217,7 +214,7 @@ export default function RepoList() {
               transform: `scale(${hoverPos.scale})`,
               transformOrigin: "center center"}}
             >
-            {<RepoCard repo={hoveredRepo}/>}
+            {hoveredRepo && getHoverCard(hoveredRepo)}
           </div>
         )}
 
