@@ -9,12 +9,13 @@
     "build": "next build",
     "lint": "eslint"
   },
-   "engines": {
+  "engines": {
     "node": "20"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.8",
     "geist": "^1.5.1",
+    "lucide-react": "^0.562.0",
     "mobile-detect": "^1.4.5",
     "next": "^16.0.7",
     "react": "19.2.0",

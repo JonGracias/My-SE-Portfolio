@@ -6,7 +6,6 @@ interface MessageShellProps {
 }
 
 export default function MessageShell({ children, onClose }: MessageShellProps) {
-
   return (
     <section
       className="
@@ -16,33 +15,34 @@ export default function MessageShell({ children, onClose }: MessageShellProps) {
         overflow-y-auto overflow-x-hidden
         custom-scrollbar
         w-[14rem] h-[14rem]
+        flex items-center justify-center
       "
     >
-
       {/* Close Button */}
-        <div className="flex items-center justify-end p-2">
-            <button
-                onClick={(e) => {
-                e.stopPropagation();
-                onClose();
-                }}
-                className="
-                w-7 h-7
-                flex items-center justify-center
-                rounded-md
-                bg-neutral-300 dark:bg-neutral-700
-                hover:bg-neutral-400 dark:hover:bg-neutral-600
-                text-black dark:text-white
-                font-bold shadow">
-            X
-            </button>
-        </div>
+      <div className="absolute top-2 right-2 flex items-center justify-end p-2">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
+          className="
+            w-7 h-7
+            flex items-center justify-center
+            rounded-md
+            bg-neutral-300 dark:bg-neutral-700
+            hover:bg-neutral-400 dark:hover:bg-neutral-600
+            text-black dark:text-white
+            font-bold shadow
+          "
+        >
+          x
+        </button>
+      </div>
 
-        {/* Content */}
-        <div className="">
-            {children}
-        </div>
-
+      {/* Content */}
+      <div className="flex items-center justify-center p-4">
+        {children}
+      </div>
     </section>
   );
 }

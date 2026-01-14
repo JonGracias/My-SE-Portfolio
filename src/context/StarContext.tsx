@@ -9,7 +9,6 @@ import {
     useCallback,
 } from "react";
 import { Repo } from "@/lib/repos";
-import { getCookie } from "@/utils/getCookie";
 import { useRepoContext } from "./RepoContext";
 import { useAuth } from "./AuthProvider";
 
@@ -162,6 +161,16 @@ export function StarProvider({ children }: { children: ReactNode }) {
             setIsStarring(false);
         }
     }, []);
+
+    useEffect(() => {
+        if (!isLogged) {
+            setStarred({});
+            try {
+            localStorage.removeItem("userStarMap");
+            } catch {}
+        }
+    }, [isLogged]);
+
 
 
     //

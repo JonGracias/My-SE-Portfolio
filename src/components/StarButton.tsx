@@ -3,8 +3,8 @@
 import { Repo } from "@/lib/repos";
 import { useStars } from "@/context/StarContext";
 import { useUIContext } from "@/context/UIContext";
-import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthProvider";
+import GitHubAuthButton from "./GitHubLogButton"
 
 export default function StarButton({ repo }: { repo: Repo }) {
   const {
@@ -21,7 +21,6 @@ export default function StarButton({ repo }: { repo: Repo }) {
   const isActive = hoveredRepo?.name === repoKey;
   const isStarred = starred[repoKey];
   const starCount = count[repoKey] ?? repo.stargazers_count;
-  const router = useRouter();
 
   //
   // -------------------------------------------------------------
@@ -43,15 +42,7 @@ async function handleStar() {
     setMessage(
       repo.name,
       <div className="w-full h-full flex items-center justify-center">
-        <div className="w-2/3" >
-          <p>You must sign in to star repositories.</p>
-          <button
-            className="px-3 py-2 bg-gray-700 rounded"
-            onClick={() => router.push("/api/github/login")}
-          >
-            Sign in with GitHub
-          </button>
-        </div>
+        <GitHubAuthButton showStatus={false}/>
       </div>
     );
     return;
