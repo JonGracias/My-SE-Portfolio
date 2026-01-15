@@ -23,12 +23,11 @@ export async function GET(req: Request) {
   const res = NextResponse.redirect(redirectTo);
 
   // set cookie on the response
-  res.cookies.set('gh_token', token, {
-    domain: '.gracias.cloud', // Note the leading dot
-    secure: true,
+  res.cookies.set("gh_token", token, {
     httpOnly: true,
-    sameSite: 'lax',
-    path: '/'
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 6, // 6 hours
   });
 
   return res;
