@@ -21,17 +21,15 @@ export async function GET(req: Request) {
 
   const redirectTo = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
   const res = NextResponse.redirect(redirectTo);
-
-  // set cookie on the response
+  
+  res.headers.set("x-debug-callback", "v3-domain-cookie-try");
   res.cookies.set("gh_token", token, {
     httpOnly: true,
     secure: true,
     sameSite: "lax",
     path: "/",
     domain: "gracias.cloud",
-    maxAge: 60 * 60 * 6, // 6 hours
+    maxAge: 60 * 60 * 6,
   });
-
-
   return res;
 }
