@@ -86,7 +86,7 @@ export default function GitHubAuthButton({
     const router = useRouter();
 
   const handleAuth = () => {
-    const redirect = encodeURIComponent("/");
+    const redirect = encodeURIComponent(window.location.origin + "/");
 
     if (isLogged) {
       // SWA logout is a redirect, not a fetch
