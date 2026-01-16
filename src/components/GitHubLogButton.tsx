@@ -85,18 +85,24 @@ export default function GitHubAuthButton({
     const [isHovered, setIsHovered] = useState(false);
     const router = useRouter();
 
-  const handleAuth = () => {
-    const redirect = encodeURIComponent("/");
+    const handleAuth = async () => {
+        if (isLogged) {
+            await fetch("/api/github/logout", {
+            method: "POST",
+            credentials: "include",
+            cache: "no-store",
+            });
 
-    if (isLogged) {
-      // SWA logout is a redirect, not a fetch
-      window.location.assign(`/.auth/logout?post_logout_redirect_uri=${redirect}`);
-      return;
-    }
+            // re-check auth state
+            await refreshAuth();
 
-    // SWA login is also a redirect
-    window.location.assign(`/.auth/login/github?post_login_redirect_uri=${redirect}`);
-  };
+            // optional: push somewhere “normal”
+            router.push("/");
+            router.refresh(); // helps App Router re-render server components too
+        } else {
+            router.push("/api/github/login");
+        }
+    };
 
 
     const currentSize = sizeConfig[size];

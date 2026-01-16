@@ -5,6 +5,7 @@ import { UIProvider } from "./UIContext";
 import { LanguageIconProvider } from "./LanguageIconContext";
 import { StarProvider } from "./StarContext";
 import { AuthProvider } from "./AuthProvider";
+import { Repo } from "@/lib/repos";
 import { useEffect } from "react";
 
 interface ContextProviderTreeProps {
@@ -32,6 +33,7 @@ export default function ContextProviderTree({ children }: ContextProviderTreePro
   
   useEffect(() => {
     warmApiRoutes([
+      "/api/github/is_authenticated",
       "/api/github/starred-list",
     ]);
   }, []);
