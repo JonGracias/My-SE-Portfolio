@@ -1,0 +1,15 @@
+{
+  "forwardingGateway": {
+    "allowedForwardedHosts": [
+      "gracias.cloud",
+      "www.gracias.cloud",
+      "gracias-edge-acbcc9djbsbjebh4.z01.azurefd.net"
+    ],
+    "requiredHeaders": {
+      "X-Azure-FDID": "09b147a8-c65e-440d-8a58-2bbcb9bc832e"
+    }
+  },
+  "routes": [
+    { "route": "/.auth/*", "headers": { "Cache-Control": "no-store" } }
+  ]
+}
