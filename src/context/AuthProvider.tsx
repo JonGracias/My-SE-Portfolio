@@ -13,34 +13,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLogged, setIsLoggedInternal] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  type SwaMe = {
-    clientPrincipal: null | {
-      identityProvider: string;
-      userDetails: string;
-      userRoles: string[];
-    };
-  };
-
   const checkAuth = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/.auth/me", {
-        method: "GET",
+      const res = await fetch("/api/github/is_authenticated", {
         credentials: "include",
         cache: "no-store",
       });
 
-      const data = (await res.json()) as SwaMe;
-      const isAuthed = !!data.clientPrincipal?.userRoles?.includes("authenticated");
-
-      setIsLoggedInternal(isAuthed);
+      const data = await res.json();
+      setIsLoggedInternal(Boolean(data.authenticated));
     } catch {
       setIsLoggedInternal(false);
     } finally {
       setLoading(false);
     }
   }, []);
-
 
   // Check once on mount
   useEffect(() => {
